@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Transaction;
@@ -30,6 +31,10 @@ class ProductController extends Controller
         if($request->sku) $products->where('sku', $request->sku);
         $products = $products->get();
 
+        foreach($products as $product) {
+            $product->category;
+        }
+
         return response()->json([
             "products" => $products,
             "query" => [
@@ -52,6 +57,39 @@ class ProductController extends Controller
                 "destination" => $request->destination
             ]
         ], isset($pln['error']) ? $pln['error'] : 200);
+    }
+
+    public function productCategories(Request $request) {
+        $request->validate([
+            'name' => 'string'
+        ]);
+        $categories = Category::query();
+        if($request->name) {
+            $categories->where('name', 'LIKE', '%'.$request->name.'%');
+        }
+        $categories = $categories->get();
+
+        return response()->json([
+            "data" => $categories,
+            "query" => [
+                "name" => $request->name
+            ]
+        ]);
+    }
+
+    public function productByCategorySlug(Request $request, $slug) {
+        $category = Category::where('slug', $slug)->first();
+        if(!$category) {
+            abort(404, "Category not found!");
+        }
+        $products = Product::where('category_id', $category->id)->orderBy('selling_price')->get();
+        // if(count($products) === 0) {
+        //     abort(404, "No product found under category ".$category->name);
+        // }
+        return response()->json([
+            "data" => $products,
+            "category" => $category
+        ]);
     }
 
     public function purchasePrepaid(Request $request) {

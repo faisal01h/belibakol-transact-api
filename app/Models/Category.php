@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Product extends Model
+class Category extends Model
 {
     use HasFactory, SoftDeletes;
-
+    protected $table = "categories";
     /**
      * The attributes that are mass assignable.
      *
@@ -17,17 +17,10 @@ class Product extends Model
      */
     protected $fillable = [
         'name',
-        'description',
-        'category_id',
-        'sku',
-        'source',
-        'max_price',
-        'base_price',
-        'discounted_price',
-        'selling_price',
-        'enabled',
-        'cutoff_start',
-        'cutoff_end'
+        'slug',
+        'image',
+        'cover_image',
+        'prompt'
     ];
 
     /**
@@ -46,8 +39,4 @@ class Product extends Model
      */
     protected $casts = [
     ];
-
-    public function category() {
-        return $this->belongsTo(Category::class);
-    }
 }
