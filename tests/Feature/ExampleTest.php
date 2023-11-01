@@ -14,6 +14,13 @@ class ExampleTest extends TestCase
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        $response->assertStatus(302);
+    }
+
+    public function test_get_all_products(): void
+    {
+        $response = $this->get(route('products'));
+        // $response->assertStatus(200);
+        $response->assertJsonIsArray('products');
     }
 }

@@ -45,12 +45,12 @@ trait Digiflazz
             "customer_no" => $destination
         ];
         $http = Http::post('https://api.digiflazz.com/v1/transaction', $payload);
-        if(isset($http['data']['rc'])) {
-            return [
-                "error" => 400,
-                "dfe" => $http['data']['rc']
-            ];
-        }
+        // if(isset($http['data']['rc'])) {
+        //     return [
+        //         "error" => 400,
+        //         "dfe" => $http['data']['rc']
+        //     ];
+        // }
         return $http['data'];
     }
 }
