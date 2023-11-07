@@ -42,6 +42,7 @@ Route::group([], function() {
 });
 
 Route::get('/products', [ProductController::class, 'priceList'])->name('products');
+Route::get('/products/details/{sku}', [ProductController::class, 'productDetails'])->name('products.details');
 Route::get('/products/categories', [ProductController::class, 'productCategories'])->name('products.categories');
 Route::get('/products/category/{slug}', [ProductController::class, 'productByCategorySlug'])->name('products.category');
 Route::get('/products/pln', [ProductController::class, 'checkPln'])->name('products.pln.check');

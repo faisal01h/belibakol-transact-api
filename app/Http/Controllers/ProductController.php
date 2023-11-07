@@ -44,6 +44,16 @@ class ProductController extends Controller
         ]);
     }
 
+    public function productDetails(Request $request, $sku) {
+        $product = Product::where('sku', $sku)->first();
+        if(!$product) {
+            abort(404);
+        }
+        return response()->json([
+            "data" => $product
+        ]);
+    }
+
     public function checkPln(Request $request) {
         $request->validate([
             "destination" => "required|string"
@@ -130,7 +140,9 @@ class ProductController extends Controller
         ]);
 
         return response()->json([
-            "data" => $transRecord
+            "data" => [
+                "transaction" => $transRecord
+            ]
         ]);
     }
 
@@ -155,7 +167,8 @@ class ProductController extends Controller
         $transRecord->save();
 
         return response()->json([
-            "data" => $transRecord
+            "data" => $transRecord,
+            "payment" => $payment
         ]);
     }
 
@@ -165,14 +178,15 @@ class ProductController extends Controller
         ]);
 
         $transRecord = Transaction::where('invoice', $request->invoice)->first();
+        $transRecord->product;
 
         if(str_contains($transRecord->payment_method, 'xendit.qris')) {
             $logEntry = json_decode($transRecord->raw_json, true);
-            foreach($logEntry as $log) {
+            foreach($logEntry['log'] as $log) {
                 if($log['name'] === 'payment-'.$transRecord->payment_method) {
                     $response = $this->xenditCheckQris($log['data']['id']);
                     if($response['status'] === "SUCCEEDED" && $transRecord->status === "UNPAID") {
-                        array_push($logEntry, [
+                        array_push($logEntry['log'], [
                             'name' => 'payment-success-'.$transRecord->payment_method,
                             'time' => now("+07:00"),
                             'data' => $response
@@ -193,6 +207,12 @@ class ProductController extends Controller
 
         } else if(str_contains($transRecord->payment_method, 'xendit.ewallet')) {
 
+        } else {
+            return response()->json([
+                "data" => [
+                    "transaction" => $transRecord
+                ]
+            ]);
         }
     }
 

@@ -49,4 +49,8 @@ class Transaction extends Model
      */
     protected $casts = [
     ];
+
+    public function product() {
+        return $this->belongsTo(Product::class);
+    }
 }
