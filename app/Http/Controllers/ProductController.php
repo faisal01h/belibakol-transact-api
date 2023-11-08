@@ -155,6 +155,7 @@ class ProductController extends Controller
         $transRecord = Transaction::where('invoice', $request->invoice)->first();
 
         $payment = $this->xenditPayQris($transRecord->selling_price, $transRecord->ref_id);
+        $transRecord->remarks = $payment['qr_string'];
 
         $logEntry = json_decode($transRecord->raw_json, true);
         array_push($logEntry['log'], [
