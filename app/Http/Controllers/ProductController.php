@@ -93,7 +93,7 @@ class ProductController extends Controller
         if(!$category) {
             abort(404, "Category not found!");
         }
-        $products = Product::where('category_id', $category->id)->orderBy('selling_price')->get();
+        $products = Product::where('category_id', $category->id)->where('enabled', true)->orderBy('selling_price')->get();
         // if(count($products) === 0) {
         //     abort(404, "No product found under category ".$category->name);
         // }
