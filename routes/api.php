@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
@@ -50,6 +51,7 @@ Route::get('/products/pln', [ProductController::class, 'checkPln'])->name('produ
 Route::post('/checkout', [ProductController::class, 'createInvoice'])->name('transaction.buy');
 Route::post('/transaction/pay', [ProductController::class, 'createPayment'])->name('transaction.pay');
 Route::get('/transaction/check', [ProductController::class, 'checkPayment'])->name('transaction.check');
+Route::get('/transaction/track/{query}', [TransactionController::class, 'track'])->name('transaction.track');
 
 Route::group(["middleware" => "auth:sanctum"], function() {
 
